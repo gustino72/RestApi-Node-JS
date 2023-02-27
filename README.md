@@ -9,4 +9,12 @@
  <li><a target="_blank" href="https://sourceforge.net/projects/xampp/files/XAMPP%20Windows/7.3.33/xampp-windows-x64-7.3.33-0-VC15-installer.exe/download">XAMPP 7.3.33</a></li>
  </ol>
  <br>
- Cara jalankannya : <pre>ketikkan pada terminal : node restapi</pre><br>
+ Cara jalankannya : <br>
+ <pre>
+ <ol>
+ <li>ketikkan pada terminal : npm install</li>
+ <li>ketikkan pada terminal : node restapi</li>
+ <li>Buka Postman gunakan method post ketikkan URLnya : http://localhost:81/api/cek_token</li>
+ <li>Isikan tokennya pada body x-www-form-urlencoded</li>
+ </ol>
+ </pre>
