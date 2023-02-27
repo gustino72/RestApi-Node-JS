@@ -1,0 +1,28 @@
+{
+  "name": "tunneling_timbangan_truck",
+  "version": "2.0.0",
+  "description": "Api SISFO Timbangan Truck",
+  "main": "index_deploy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "MediaSoft Solusindo",
+  "license": "ISC",
+  "dependencies": {
+    "base-64": "^1.0.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jimp": "^0.16.1",
+    "js-sha256": "^0.9.0",
+    "moment-timezone": "^0.5.33",
+    "mysql": "^2.18.1",
+    "node-cron": "^3.0.0",
+    "node-fetch": "^2.6.6",
+    "node-windows": "^1.0.0-beta.6",
+    "read-ini-file": "^3.0.1",
+    "sha1": "^1.1.1",
+    "utf8": "^3.0.0",
+    "write-ini-file": "^3.0.2"
+  }
+}
