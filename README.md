@@ -8,3 +8,5 @@
  <li><a target="_blank" href="https://www.postman.com/downloads/">Postman</a></li>
  <li><a target="_blank" href="https://sourceforge.net/projects/xampp/files/XAMPP%20Windows/7.3.33/xampp-windows-x64-7.3.33-0-VC15-installer.exe/download">XAMPP 7.3.33</a></li>
  </ol>
+ <br>
+ Cara jalankannya : <pre>ketikkan pada terminal : node restapi</pre><br>
