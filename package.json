@@ -1,12 +1,12 @@
 {
-  "name": "tunneling_timbangan_truck",
-  "version": "2.0.0",
-  "description": "Api SISFO Timbangan Truck",
-  "main": "index_deploy.js",
+  "name": "restapi_node_js",
+  "version": "1.0.0",
+  "description": "RestApi Node JS : Restapi OOP Javascript",
+  "main": "restapi.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "MediaSoft Solusindo",
+  "author": "Jean Riko Kurniawan Putra, S.Kom, M.Kom",
   "license": "ISC",
   "dependencies": {
     "base-64": "^1.0.0",

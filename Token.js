@@ -11,6 +11,10 @@ class Token {
     return b;
   }
 
+  TokenEmail(){
+    return 'token emailnya disini';
+  }
+
   LoginToken(){
     var nilai;
     if (!this.isiToken){
@@ -30,11 +34,15 @@ class Token {
 
 module.exports = {
   TokenRahasia: function(){
-    const tokennya = new Token('');
-    return tokennya.TokenRahasia();
+    const objtkn = new Token('');
+    return objtkn.TokenRahasia();
+  },
+  TokenEmail: function () {
+    const objtkn = new Token('');
+    return objtkn.TokenEmail();
   },
   LoginToken: function(isi_token) {
-    const tokennya = new Token(isi_token);
-    return tokennya.LoginToken(tokennya.isiToken);
+    const objtkn = new Token(isi_token);
+    return objtkn.LoginToken(objtkn.isiToken);
   },
 };

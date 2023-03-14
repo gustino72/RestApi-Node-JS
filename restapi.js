@@ -1139,95 +1139,6 @@ app.put("/api/ubah_data_gbr", (req, res) => {
   console.log(data);
 });
 
-app.post("/api/login_barcode", (req, res) => {
-  let data = {
-    token: req.body.token,
-    hasil_barcode: req.body.hasil_barcode,
-  };
-  let sql, hasil_barcode, hasil_pisah;
-  hasil_barcode = base64.decode(data["hasil_barcode"]);
-  hasil_pisah = hasil_barcode.split("_");
-  sql =
-    'SELECT * FROM mediasoft_pengguna WHERE user_pengguna = "' +
-    hasil_pisah[1] +
-    '"';
-  console.log(sql);
-  res.setHeader("Content-Type", "application/json");
-  if (data["token"] && data["hasil_barcode"]) {
-    if (Token.LoginToken(data["token"])) {
-      hendelKoneksi();
-      conn.query(sql, data, (err, results) => {
-        if (err) {
-          res.send(
-            JSON.stringify({
-              status: 200,
-              pesan: "Error.",
-              status_tampil: false,
-              tokennyaa: "Hidden",
-              error: err,
-              jumlah_data: 0,
-              data: results,
-            })
-          );
-        } else {
-          if (results.length > 0) {
-            res.send(
-              JSON.stringify({
-                status: 200,
-                pesan: "Datanya ada.",
-                status_tampil: true,
-                tokennyaa: "Hidden",
-                error: null,
-                jumlah_data: results.length,
-                data: results,
-              })
-            );
-          } else {
-            res.send(
-              JSON.stringify({
-                status: 200,
-                pesan: "Belum Ada datanya.",
-                status_tampil: false,
-                tokennyaa: "Hidden",
-                error: null,
-                jumlah_data: results.length,
-                data: results,
-              })
-            );
-          }
-        }
-      });
-      conn.end();
-      console.log("Putuskan MySQL/MariaDB...");
-    } else {
-      res.send(
-        JSON.stringify({
-          status: 200,
-          pesan: "Token Tidak Sesuai !",
-          status_tampil: false,
-          tokennyaa: data["token"],
-          error: null,
-          jumlah_data: 0,
-          data: [],
-        })
-      );
-    }
-  } else {
-    res.send(
-      JSON.stringify({
-        status: 200,
-        pesan: "Inputan Kurang !",
-        status_tampil: false,
-        tokennyaa: data["token"],
-        error: null,
-        jumlah_data: 0,
-        data: [],
-      })
-    );
-  }
-  console.log(data);
-});
-
 app.post("/api/kosongkan_data", (req, res) => {
   let data = {
     token: req.body.token,
@@ -1321,15 +1232,26 @@ app.post("/api/notif_email", (req, res) => {
     if (Token.LoginToken(data.token)) {
       if (data.email_dituju && data.subjek && data.isi_email) {
         var apiEmail = "https://mediasoftsolusindo.com/api";
-        apiEmail += "/api_kirim_email_sitimpa.php?";
-        apiEmail += "modul=email";
-        apiEmail += "&act=kirim";
-        apiEmail += "&email_dituju=" + data.email_dituju;
-        apiEmail += "&subjek=" + data.subjek;
-        apiEmail += "&isi_email=" + data.isi_email;
-        apiEmail += "&token=" + Token.TokenEmail;
+        apiEmail += "/api_kirim_email.php";
 
-        fetch(apiEmail)
+        var fd = 'modul=email';
+        fd += '&act=kirim_email';
+        fd += '&email=email yg dituju';
+        fd += '&email_pengirim=email pengirim dari SMTPnya';
+        fd += '&pass_pengirim=password email pengirim';
+        fd += '&pass_smtp=password SMTP Email';
+        fd += '&isi_email=Base64 dari HTML';
+
+        const optionku = {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': PublikFungsi.kontentipe,
+          },
+          body: fd,
+        }
+
+        fetch(apiEmail, optionku)
           .then((response) => response.json())
           .then((data_json) => {
             console.log(data_json);
@@ -1365,10 +1287,9 @@ app.post("/api/notif_email", (req, res) => {
               JSON.stringify({
                 status: 200,
                 pesan: "Pesan Email Error System : " + err,
-                status_tampil: false,
+                status_kirim: false,
                 tokennyaa: "Hidden",
                 error: err,
-                jumlah_data: 0,
                 data: [],
               })
             );
@@ -1378,10 +1299,9 @@ app.post("/api/notif_email", (req, res) => {
           JSON.stringify({
             status: 200,
             pesan: "Inputan Email Kurang !",
-            status: false,
+            status_kirim: false,
             tokennyaa: data.token,
             error: null,
-            jumlah_data: 0,
             data: [],
           })
         );
@@ -1391,10 +1311,9 @@ app.post("/api/notif_email", (req, res) => {
         JSON.stringify({
           status: 200,
           pesan: "Tokennya Salah.",
-          status: false,
+          status_kirim: false,
           tokennyaa: data.token,
           error: null,
-          jumlah_data: 0,
           data: [],
         })
       );
@@ -1405,10 +1324,9 @@ app.post("/api/notif_email", (req, res) => {
       JSON.stringify({
         status: 200,
         pesan: "Pesan Email Error System : " + error,
-        status: false,
+        status_kirim: false,
         tokennyaa: "Hidden",
         error: error,
-        jumlah_data: 0,
         data: [],
       })
     );
@@ -1513,195 +1431,6 @@ app.post("/api/notif_telegram", (req, res) => {
         status: false,
         tokennyaa: "Hidden",
         error: error,
-        jumlah_data: 0,
-        data: [],
-      })
-    );
-  }
-  console.log(data);
-});
-
-app.post("/api/set_auto_kirim_sp", (req, res) => {
-  let data = {
-    token: req.body.token,
-    auto_kirim: req.body.auto_kirim,
-    ritasi_minimal: req.body.ritasi_minimal,
-    tpa: req.body.tpa,
-  };
-  res.setHeader("Content-Type", "application/json");
-  if (!data || typeof data != "undefined") {
-    if (Token.LoginToken(data.token)) {
-      // if (data.token) {
-      const auto_kirim = data.auto_kirim;
-      const ritasi_minimal = data.ritasi_minimal;
-      const tpa = data.tpa;
-      let pesan;
-      if (!auto_kirim) {
-        pesan = "Inputtan auto_kirim masih kosong !";
-        res.send(
-          JSON.stringify({
-            status: 200,
-            status_set: false,
-            pesan: pesan,
-            tokennyaa: "Hidden",
-            error: "",
-            jumlah_data: 0,
-            data: [],
-          })
-        );
-        console.log(pesan);
-      } else {
-        var dataini;
-        var alamatfile;
-        var fd;
-        try {
-          alamatfile = path.join(__dirname, "job_sitimpa.ini");
-          dataini = bacaIniFile.sync(alamatfile);
-          fd = {
-            auto_sp: auto_kirim,
-            ritasi_minimal: ritasi_minimal,
-            tpa: tpa,
-            tgl_simpan: PublikFungsi.WaktuSekarang("DD MMMM YYYY HH:mm:ss"),
-            count_simpan: parseInt(dataini.count_simpan) + 1,
-          };
-        } catch (error) {
-          fd = {
-            auto_sp: auto_kirim,
-            ritasi_minimal: ritasi_minimal,
-            tpa: tpa,
-            tgl_simpan: PublikFungsi.WaktuSekarang("DD MMMM YYYY HH:mm:ss"),
-            count_simpan: 1,
-          };
-        }
-
-        tulisIniFile("job_sitimpa.ini", fd)
-          .then(() => {
-            pesan = "Penyimpannan Job Berhasil.";
-            res.send(
-              JSON.stringify({
-                status: 200,
-                status_set: true,
-                pesan: pesan,
-                tokennyaa: "Hidden",
-                error: "",
-                jumlah_data: 0,
-                data: [],
-              })
-            );
-            console.log(pesan);
-
-            dataini = bacaIniFile.sync(alamatfile);
-            console.log(dataini);
-          })
-          .catch((e) => {
-            pesan = "Error penyimpanan job : " + e;
-            res.send(
-              JSON.stringify({
-                status: 200,
-                status_set: false,
-                pesan: pesan,
-                tokennyaa: "Hidden",
-                error: e,
-                jumlah_data: 0,
-                data: [],
-              })
-            );
-            console.log(pesan);
-          });
-      }
-    } else {
-      res.send(
-        JSON.stringify({
-          status: 200,
-          status_set: false,
-          pesan: "Token Tidak Sesuai !",
-          tokennyaa: data.token,
-          error: null,
-          jumlah_data: 0,
-          data: [],
-        })
-      );
-    }
-  } else {
-    res.send(
-      JSON.stringify({
-        status: 200,
-        status_set: false,
-        pesan: "Token Kosong !",
-        tokennyaa: data["token"],
-        error: null,
-        jumlah_data: 0,
-        data: [],
-      })
-    );
-  }
-  console.log(data);
-});
-
-app.post("/api/get_auto_kirim_sp", (req, res) => {
-  let data = {
-    token: req.body.token,
-  };
-  res.setHeader("Content-Type", "application/json");
-  if (!data || typeof data != "undefined") {
-    if (Token.LoginToken(data.token)) {
-      // if (data.token) {
-      var dataini;
-      var alamatfile;
-      var arrDataIni = [];
-      try {
-        alamatfile = path.join(__dirname, "job_sitimpa.ini");
-        dataini = bacaIniFile.sync(alamatfile);
-        arrDataIni = [dataini];
-        pesan = "Load Data Job Berhasil.";
-        res.send(
-          JSON.stringify({
-            status: 200,
-            status_get: true,
-            pesan: pesan,
-            tokennyaa: "Hidden",
-            error: "",
-            jumlah_data: arrDataIni.length,
-            data: arrDataIni,
-          })
-        );
-        console.log(pesan);
-      } catch (error) {
-        pesan = "Error Get Auto Kirim : " + error;
-        res.send(
-          JSON.stringify({
-            status: 200,
-            status_get: false,
-            pesan: pesan,
-            tokennyaa: "Hidden",
-            error: "",
-            jumlah_data: 0,
-            data: [],
-          })
-        );
-        console.log(pesan);
-      }
-    } else {
-      res.send(
-        JSON.stringify({
-          status: 200,
-          status_get: false,
-          pesan: "Token Tidak Sesuai !",
-          tokennyaa: data.token,
-          error: null,
-          jumlah_data: 0,
-          data: [],
-        })
-      );
-    }
-  } else {
-    res.send(
-      JSON.stringify({
-        status: 200,
-        status_get: false,
-        pesan: "Token Kosong !",
-        tokennyaa: data["token"],
-        error: null,
         jumlah_data: 0,
         data: [],
       })

@@ -1,5 +1,10 @@
 const momentjs = require("moment-timezone");
 
+class Variabel {
+  kontentipe = 'application/x-www-form-urlencoded; charset=UTF-8';
+  botTelegram = 'Token Bot Telegramnya';
+}
+
 class Kueri {
   kueri_cari_data(nama_tabel, nama_field, kondisi) {
     let sql;
@@ -282,8 +287,11 @@ class Fungsi {
 
 var kuerinya = new Kueri;
 var fungsinya = new Fungsi;
+var variabel = new Variabel;
 
 module.exports = {
+  kontentipe: variabel.kontentipe,
+  botTelegram: variabel.botTelegram,
   CariData: function(nama_tabel, nama_field, kondisi) {
     return kuerinya.kueri_cari_data(nama_tabel, nama_field, kondisi);
   },
