@@ -282,7 +282,7 @@ app.post("/api/tambah_biodata", (req, res) => {
             JSON.stringify({
               status: 200,
               pesan: "Error Code Tambah BioData.",
-              status_ubah: false,
+              status_tambah: false,
               tokennyaa: "Hidden",
               error: err,
               data: results,
@@ -295,7 +295,7 @@ app.post("/api/tambah_biodata", (req, res) => {
               JSON.stringify({
                 status: 200,
                 pesan: "Tambah BioData Sukses.",
-                status_ubah: true,
+                status_tambah: true,
                 tokennyaa: "Hidden",
                 error: null,
                 data: results,
@@ -306,7 +306,7 @@ app.post("/api/tambah_biodata", (req, res) => {
               JSON.stringify({
                 status: 200,
                 pesan: "Tambah BioData Error.",
-                status_ubah: false,
+                status_tambah: false,
                 tokennyaa: "Hidden",
                 error: null,
                 data: results,
@@ -322,7 +322,7 @@ app.post("/api/tambah_biodata", (req, res) => {
         JSON.stringify({
           status: 200,
           pesan: "Token Tidak Sesuai !",
-          status_ubah: false,
+          status_tambah: false,
           tokennyaa: data["token"],
           error: null,
           data: [],
@@ -334,7 +334,7 @@ app.post("/api/tambah_biodata", (req, res) => {
       JSON.stringify({
         status: 200,
         pesan: "Inputan Kurang !",
-        status_ubah: false,
+        status_tambah: false,
         tokennyaa: data["token"],
         error: null,
         data: [],
