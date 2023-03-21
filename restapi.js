@@ -1259,9 +1259,8 @@ app.post("/api/ubah_datak", (req, res) => {
   console.log(data);
 });
 
-
 app.post("/api/hapus_datak", (req, res) => {
-  console.log("Hapus Data Pendidikan");
+  console.log("Hapus Data Pengalaman Kerja");
   let data = {
     token: req.body.token,
     kd_pengalaman : req.body.kd_pengalaman,
@@ -1354,6 +1353,414 @@ app.post("/api/hapus_datak", (req, res) => {
   }
   console.log(data);
 });
+
+app.post("/api/tampil_dataU", (req, res) => {
+  console.log("Tampil Data Pengguna Database");
+  let data = {
+    token: req.body.token,
+    jam_request: PublikFungsi.WaktuSekarang("DD-MM-YYYY HH:mm:ss") + " Wib.",
+  };
+  let sql;
+  let nama_tabel = 'tb_pengguna';
+  let nama_field = '*';
+  let kondisi = 'ORDER BY nm_pengguna ASC';
+  try {
+    sql = PublikFungsi.CariDataDebug(
+      nama_tabel,
+      nama_field,
+      kondisi
+    );
+  } catch (error) {
+    sql = PublikFungsi.CariDataDebug(
+      nama_tabel,
+      nama_field,
+      kondisi
+    );
+    console.log('Erorr Sistem : ' + error);
+  }
+  res.setHeader("Content-Type", "application/json");
+  if (data["token"]) {
+    if (Token.LoginToken(data["token"])) {
+      hendelKoneksi();
+      conn.query(sql, data, (err, results) => {
+        if (err) {
+          res.send(
+            JSON.stringify({
+              status: 200,
+              pesan: "Error.",
+              status_tampil: false,
+              tokennyaa: "Hidden",
+              error: err,
+              jumlah_data: 0,
+              data: results,
+            })
+          );
+        } else {
+          if (results.length > 0) {
+            res.send(
+              JSON.stringify({
+                status: 200,
+                pesan: "Datanya ada.",
+                status_tampil: true,
+                tokennyaa: "Hidden",
+                error: null,
+                jumlah_data: results.length,
+                data: results,
+              })
+            );
+          } else {
+            res.send(
+              JSON.stringify({
+                status: 200,
+                pesan: "Belum Ada datanya.",
+                status_tampil: false,
+                tokennyaa: "Hidden",
+                error: null,
+                jumlah_data: results.length,
+                data: results,
+              })
+            );
+          }
+        }
+      });
+      conn.end();
+      console.log("Putuskan MySQL/MariaDB...");
+    } else {
+      res.send(
+        JSON.stringify({
+          status: 200,
+          pesan: "Token Tidak Sesuai !",
+          status_tampil: false,
+          tokennyaa: data["token"],
+          error: null,
+          jumlah_data: 0,
+          data: [],
+        })
+      );
+    }
+  } else {
+    res.send(
+      JSON.stringify({
+        status: 200,
+        pesan: "Inputan Kurang !",
+        status_tampil: false,
+        tokennyaa: data["token"],
+        error: null,
+        jumlah_data: 0,
+        data: [],
+      })
+    );
+  }
+  console.log(data);
+});
+
+app.post("/api/tambah_dataU", (req, res) => {
+  console.log("Tambah Data Pengguna Database");
+  let data = {
+    token: req.body.token,
+    nm_pengguna : req.body.nm_pengguna,
+    psw_pengguna : req.body.psw_pengguna,
+    level_user : req.body.level_user,
+	status_akun : req.body.status_akun,
+    terakhir_login : req.body.terakhir_login,
+    jam_request: PublikFungsi.WaktuSekarang("DD-MM-YYYY HH:mm:ss") + " Wib.",
+  };
+  let sql;
+  let nama_tabel = 'tb_pengguna';
+  let nama_field = 'nm_pengguna,psw_pengguna,level_user,status_akun,terakhir_login';
+  let value_field = '"' + data.nm_pengguna + '",';
+  value_field += '"' + data.psw_pengguna+ '",';
+  value_field += '"' + data.level_user + '",';
+  value_field += '"' + data.status_akun+ '",';
+  value_field += '"' + data.terakhir_login + '"';
+  try {
+    sql = PublikFungsi.SimpanSingleDebug(
+      nama_tabel,
+      nama_field,
+      value_field
+    );
+  } catch (error) {
+    sql = PublikFungsi.SimpanSingleDebug(
+      nama_tabel,
+      nama_field,
+      value_field
+    );
+    console.log('Erorr Sistem : ' + error);
+  }
+  res.setHeader("Content-Type", "application/json");
+  if (data["token"]) {
+    if (Token.LoginToken(data["token"])) {
+      hendelKoneksi();
+      conn.query(sql, data, (err, results) => {
+        if (err) {
+          res.send(
+            JSON.stringify({
+              status: 200,
+              pesan: "Error Code Tambah Data.",
+              status_tambah: false,
+              tokennyaa: "Hidden",
+              error: err,
+              data: results,
+            })
+          );
+        } else {
+          let affectedRows = results.affectedRows;
+          if (affectedRows = 1) {
+            res.send(
+              JSON.stringify({
+                status: 200,
+                pesan: "Tambah Data Sukses.",
+                status_tambah: true,
+                tokennyaa: "Hidden",
+                error: null,
+                data: results,
+              })
+            );
+          } else {
+            res.send(
+              JSON.stringify({
+                status: 200,
+                pesan: "Tambah Data Error.",
+                status_tambah: false,
+                tokennyaa: "Hidden",
+                error: null,
+                data: results,
+              })
+            );
+          }
+        }
+      });
+      conn.end();
+      console.log("Putuskan MySQL/MariaDB...");
+    } else {
+      res.send(
+        JSON.stringify({
+          status: 200,
+          pesan: "Token Tidak Sesuai !",
+          status_tambah: false,
+          tokennyaa: data["token"],
+          error: null,
+          data: [],
+        })
+      );
+    }
+  } else {
+    res.send(
+      JSON.stringify({
+        status: 200,
+        pesan: "Inputan Kurang !",
+        status_tambah: false,
+        tokennyaa: data["token"],
+        error: null,
+        data: [],
+      })
+    );
+  }
+  console.log(data);
+});
+
+app.post("/api/ubah_dataU", (req, res) => {
+  console.log("Ubah Data Pengguna Database");
+  let data = {
+    token: req.body.token,
+    nm_pengguna : req.body.nm_pengguna,
+    psw_pengguna : req.body.psw_pengguna,
+    level_user : req.body.level_user,
+	status_akun : req.body.status_akun,
+    terakhir_login : req.body.terakhir_login,
+    jam_request: PublikFungsi.WaktuSekarang("DD-MM-YYYY HH:mm:ss") + " Wib.",
+  };
+  let sql;
+  let nama_tabel = 'tb_pengguna';
+
+  let nama_field = 'psw_pengguna = "' + data.psw_pengguna + '",';
+  nama_field += 'level_user = "' + data.level_user + '",';
+  nama_field += 'status_akun = "' + data.status_akun + '",';
+  nama_field += 'terakhir_login = "' + data.terakhir_login + '"';
+
+  let kondisi = 'nm_pengguna = "' + data.nm_pengguna + '"';
+
+  try {
+    sql = PublikFungsi.UbahDebug(
+      nama_tabel,
+      nama_field,
+      kondisi
+    );
+  } catch (error) {
+    sql = PublikFungsi.UbahDebug(
+      nama_tabel,
+      nama_field,
+      kondisi
+    );
+    console.log(error);
+  }
+  res.setHeader("Content-Type", "application/json");
+  if (data["token"]) {
+    if (Token.LoginToken(data["token"])) {
+      hendelKoneksi();
+      conn.query(sql, data, (err, results) => {
+        if (err) {
+          res.send(
+            JSON.stringify({
+              status: 200,
+              pesan: "Error Code Ubah Data.",
+              status_ubah: false,
+              tokennyaa: "Hidden",
+              error: err,
+              data: results,
+            })
+          );
+        } else {
+          let affectedRows = results.affectedRows;
+          if (affectedRows = 1) {
+            res.send(
+              JSON.stringify({
+                status: 200,
+                pesan: "Ubah Data Sukses.",
+                status_ubah: true,
+                tokennyaa: "Hidden",
+                error: null,
+                data: results,
+              })
+            );
+          } else {
+            res.send(
+              JSON.stringify({
+                status: 200,
+                pesan: "Ubah Data Error.",
+                status_ubah: false,
+                tokennyaa: "Hidden",
+                error: null,
+                data: results,
+              })
+            );
+          }
+        }
+      });
+      conn.end();
+      console.log("Putuskan MySQL/MariaDB...");
+    } else {
+      res.send(
+        JSON.stringify({
+          status: 200,
+          pesan: "Token Tidak Sesuai !",
+          status_ubah: false,
+          tokennyaa: data["token"],
+          error: null,
+          data: [],
+        })
+      );
+    }
+  } else {
+    res.send(
+      JSON.stringify({
+        status: 200,
+        pesan: "Inputan Kurang !",
+        status_ubah: false,
+        tokennyaa: data["token"],
+        error: null,
+        data: [],
+      })
+    );
+  }
+  console.log(data);
+});
+
+app.post("/api/hapus_dataU", (req, res) => {
+  console.log("Hapus Data Pengguna Database");
+  let data = {
+    token: req.body.token,
+    nm_pengguna : req.body.nm_pengguna,
+    jam_request: PublikFungsi.WaktuSekarang("DD-MM-YYYY HH:mm:ss") + " Wib.",
+  };
+  let sql;
+  let nama_tabel = 'tb_pengguna';
+  let kondisi = 'nm_pengguna = "' + data.nm_pengguna + '"';
+
+  try {
+    sql = PublikFungsi.HapusDebug(
+      nama_tabel,
+      kondisi
+    );
+  } catch (error) {
+    sql = PublikFungsi.HapusDebug(
+      nama_tabel,
+      kondisi
+    );
+    console.log(error);
+  }
+  res.setHeader("Content-Type", "application/json");
+  if (data["token"]) {
+    if (Token.LoginToken(data["token"])) {
+      hendelKoneksi();
+      conn.query(sql, data, (err, results) => {
+        if (err) {
+          res.send(
+            JSON.stringify({
+              status: 200,
+              pesan: "Error Code Hapus Data.",
+              status_hapus: false,
+              tokennyaa: "Hidden",
+              error: err,
+              data: results,
+            })
+          );
+        } else {
+          let affectedRows = results.affectedRows;
+          if (affectedRows = 1) {
+            res.send(
+              JSON.stringify({
+                status: 200,
+                pesan: "Hapus Data Sukses.",
+                status_hapus: true,
+                tokennyaa: "Hidden",
+                error: null,
+                data: results,
+              })
+            );
+          } else {
+            res.send(
+              JSON.stringify({
+                status: 200,
+                pesan: "Hapus Data Error.",
+                status_hapus: false,
+                tokennyaa: "Hidden",
+                error: null,
+                data: results,
+              })
+            );
+          }
+        }
+      });
+      conn.end();
+      console.log("Putuskan MySQL/MariaDB...");
+    } else {
+      res.send(
+        JSON.stringify({
+          status: 200,
+          pesan: "Token Tidak Sesuai !",
+          status_hapus: false,
+          tokennyaa: data["token"],
+          error: null,
+          data: [],
+        })
+      );
+    }
+  } else {
+    res.send(
+      JSON.stringify({
+        status: 200,
+        pesan: "Inputan Kurang !",
+        status_hapus: false,
+        tokennyaa: data["token"],
+        error: null,
+        data: [],
+      })
+    );
+  }
+  console.log(data);
+});
+
 
 app.put("/api/tambah_data_gbr", (req, res) => {
   let data = {
