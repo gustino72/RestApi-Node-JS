@@ -854,7 +854,6 @@ app.post("/api/ubah_datap", (req, res) => {
   console.log(data);
 });
 
-
 app.post("/api/hapus_datap", (req, res) => {
   console.log("Hapus Data Pendidikan");
   let data = {
